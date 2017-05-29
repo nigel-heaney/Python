@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+"""
+############################################################################
+# Filename:     fkview
+# Written by:   Nigel Heaney
+# Decription:   Highlighter tool for fklogs to help improve analysis and locate errors more easily
+#
+# Version:      1.0
+# Date:         10/Nov/2012
+#
+# v1.1		NH	extended ciritical error list	
+#
+############################################################################
+"""
+import re,os,be,sys
+
+def showusage():
+	print "fkview <fkinstall log file>"
+	exit(1)
+## MAIN
+if len(sys.argv) < 2:
+	showusage()
+
+if not os.path.exists(sys.argv[1]):
+	showusage()
+
+be.set_colour('white')
+fklog = open(sys.argv[1])
+
+for l in fklog:
+	if re.search('INFO|DEBUG|WARN',l):
+		be.set_colour('grey')
+	if re.search('Copying|row\(s\)',l):
+		be.set_colour('GREEN')
+	if re.search('succeeded|Installation OK|No errors',l):
+		be.set_colour('blue')
+	if re.search('ERROR|ORA-28000|ORA-|account is locked|Filename mismatch|Installation Aborted|SP2-0306|SP2-0157|Cannot create|No such file|Errors:|Cannot copy file|ambiguous redirect|command not found',l):
+		be.set_colour('red')
+	print l,
+	be.set_colour('lgrey')
+
+be.set_colour('reset')
+fklog.close
+
